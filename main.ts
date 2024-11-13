@@ -5,6 +5,7 @@ interface MyPluginSettings {
 	isSelectingMode: boolean;
 	isBlurActive: boolean;
 	presets: string[];
+	keywords: string[];
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
@@ -12,6 +13,7 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 	isSelectingMode: false,
 	isBlurActive: false,
 	presets: [],
+	keywords: [],
 };
 
 export default class BlurPlugin extends Plugin {
@@ -97,7 +99,7 @@ export default class BlurPlugin extends Plugin {
 		this.settings.isBlurActive = !this.settings.isBlurActive;
 		
 		if (this.settings.isBlurActive) {
-			this.applyBlurToPresets();
+			this.applyBlurEffects();
 			new Notice('Blur effect enabled');
 		} else {
 			this.removeAllBlur();
@@ -277,6 +279,49 @@ export default class BlurPlugin extends Plugin {
 	isPresetPanelElement(element: HTMLElement): boolean {
 		return element.closest('.preset-panel') !== null;
 	}
+
+	applyBlurEffects() {
+		this.applyBlurToPresets();
+		this.applyKeywordBlur();
+	}
+
+	applyKeywordBlur() {
+		if (!this.settings.keywords.length) return;
+
+		const walker = document.createTreeWalker(
+			document.body,
+			NodeFilter.SHOW_TEXT,
+			{
+				acceptNode: function(node) {
+					if (node.parentElement?.tagName === 'SCRIPT' || 
+						node.parentElement?.tagName === 'STYLE') {
+						return NodeFilter.FILTER_REJECT;
+					}
+					return NodeFilter.FILTER_ACCEPT;
+				}
+			}
+		);
+
+		const textNodes: Text[] = [];
+		let node;
+		while (node = walker.nextNode()) {
+			textNodes.push(node as Text);
+		}
+
+		textNodes.forEach(textNode => {
+			const content = textNode.textContent || '';
+			if (this.settings.keywords.some(keyword => content.includes(keyword))) {
+				const parent = textNode.parentElement;
+				if (parent && !this.isPresetPanelElement(parent) && !this.isRibbonElement(parent)) {
+					if (this.isEditorElement(parent)) {
+						parent.classList.add('blur-plugin-editor');
+					} else {
+						parent.style.filter = `blur(${this.settings.blurAmount})`;
+					}
+				}
+			}
+		});
+	}
 }
 
 class BlurSettingTab extends PluginSettingTab {
@@ -307,6 +352,55 @@ class BlurSettingTab extends PluginSettingTab {
 						this.plugin.applyBlurToPresets();
 					}
 				}));
+
+		containerEl.createEl('h3', {text: 'Keywords Management'});
+		
+		const keywordsList = containerEl.createEl('div', {cls: 'keywords-list'});
+		this.updateKeywordsList(keywordsList);
+
+		new Setting(containerEl)
+			.setName('Add Keyword')
+			.setDesc('Add a new keyword to blur content containing it')
+			.addText(text => text
+				.setPlaceholder('Enter keyword')
+				.onChange(() => {}))
+			.addButton(button => button
+				.setButtonText('Add')
+				.onClick(async () => {
+					const input = button.buttonEl.parentElement?.querySelector('input') as HTMLInputElement;
+					const keyword = input.value.trim();
+					if (keyword && !this.plugin.settings.keywords.includes(keyword)) {
+						this.plugin.settings.keywords.push(keyword);
+						await this.plugin.saveSettings();
+						this.updateKeywordsList(keywordsList);
+						input.value = '';
+						if (this.plugin.settings.isBlurActive) {
+							this.plugin.applyBlurEffects();
+						}
+					}
+				}));
+	}
+
+	updateKeywordsList(container: HTMLElement) {
+		container.empty();
+		
+		this.plugin.settings.keywords.forEach((keyword) => {
+			const keywordEl = container.createEl('div', {cls: 'keyword-item'});
+			keywordEl.createSpan({text: keyword});
+			
+			const deleteButton = keywordEl.createEl('button', {text: '×'});
+			deleteButton.addEventListener('click', async () => {
+				const index = this.plugin.settings.keywords.indexOf(keyword);
+				if (index > -1) {
+					this.plugin.settings.keywords.splice(index, 1);
+					await this.plugin.saveSettings();
+					this.updateKeywordsList(container);
+					if (this.plugin.settings.isBlurActive) {
+						this.plugin.applyBlurEffects();
+					}
+				}
+			});
+		});
 	}
 }
 

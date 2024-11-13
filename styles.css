@@ -134,3 +134,32 @@ If your plugin does not need CSS, delete this file.
     pointer-events: auto !important;
     filter: none !important;
 }
+
+.keywords-list {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+}
+
+.keyword-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    margin: 5px 0;
+    background: var(--background-secondary);
+    border-radius: 4px;
+}
+
+.keyword-item button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.keyword-item button:hover {
+    color: var(--text-error);
+}
