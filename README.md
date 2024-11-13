@@ -9,6 +9,7 @@ A plugin for Obsidian that allows you to selectively blur elements in your notes
 - **Easy Selection**: Visual interface for selecting elements with real-time preview
 - **Draggable Panel**: Convenient preset management panel that can be moved around
 - **Customizable Blur**: Adjust the blur amount to your preference
+- **Keyword-based Blur**: Blur objects containing specified keywords
 
 ## How to Use
 
@@ -103,4 +104,4 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 - [ ] Multiple preset support
 - [ ] Keyboard shortcuts
 - [ ] Export/Import presets
-- [ ] Keyword-based blur function to break through the limitations of css selection (such as only blurring specific notes)
+- [x] Keyword-based blur function to break through the limitations of css selection (such as only blurring specific notes)
