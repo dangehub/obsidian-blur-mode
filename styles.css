@@ -6,3 +6,131 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+/* 使用 CSS 变量来存储模糊大小 */
+:root {
+    --blur-amount: 5px;
+}
+
+/* 编辑器模糊效果 */
+.blur-plugin-editor {
+    filter: blur(var(--blur-amount)) !important;
+}
+
+/* 确保模糊效果应用到编辑器的所有子元素 */
+.blur-plugin-editor * {
+    filter: blur(var(--blur-amount)) !important;
+}
+
+/* 选择模式下的高亮效果 */
+.blur-plugin-selecting {
+    outline: 2px solid rgba(255, 255, 0, 0.7) !important;
+}
+
+/* 预设中元素的高亮效果 */
+.blur-plugin-preset {
+    outline: 2px solid rgba(0, 255, 0, 0.7) !important;
+}
+
+/* 确保 ribbon 元素不会被模糊 */
+.ribbon-tab,
+.side-dock-ribbon,
+.ribbon-tab *,
+.side-dock-ribbon * {
+    filter: none !important;
+}
+
+/* 预设列表样式 */
+.preset-list-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.preset-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.preset-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin: 4px 0;
+    background: var(--background-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.preset-item:hover {
+    background: var(--background-modifier-hover);
+}
+
+.preset-selector {
+    flex: 1;
+    margin-right: 10px;
+    word-break: break-all;
+}
+
+.preset-delete-btn {
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 8px;
+    font-size: 1.2em;
+}
+
+.preset-delete-btn:hover {
+    color: var(--text-error);
+}
+
+.preset-panel {
+    position: fixed;
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    z-index: 1000;
+    touch-action: none;
+    user-select: none;
+    top: 0;
+    left: 0;
+    transform: translate3d(20px, 50px, 0);
+    pointer-events: auto !important;
+    filter: none !important;
+}
+
+.preset-panel-handle {
+    padding: 10px;
+    background: var(--background-secondary);
+    border-radius: 8px 8px 0 0;
+    cursor: move;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    touch-action: none;
+}
+
+.preset-panel-close {
+    cursor: pointer;
+    padding: 0 8px;
+    font-size: 1.2em;
+}
+
+.preset-panel-close:hover {
+    color: var(--text-error);
+}
+
+.preset-list-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.preset-panel * {
+    pointer-events: auto !important;
+    filter: none !important;
+}
