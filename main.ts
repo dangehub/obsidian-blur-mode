@@ -167,7 +167,10 @@ export default class BlurPlugin extends Plugin {
 		await this.saveSettings();
 		
 		if (this.blurPanel) {
-			this.blurPanel.updatePresetList(this.blurPanel.containerEl.querySelector('.selector-container'));
+			const container = this.blurPanel.containerEl.querySelector('.selector-container');
+			if (container instanceof HTMLElement) {
+				this.blurPanel.updatePresetList(container);
+			}
 		}
 	}
 
