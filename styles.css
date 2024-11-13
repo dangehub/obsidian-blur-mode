@@ -12,9 +12,34 @@ If your plugin does not need CSS, delete this file.
     --blur-amount: 5px;
 }
 
-/* 编辑器模糊效果 */
+/* 基础模糊效果 */
 .blur-plugin-editor {
     filter: blur(var(--blur-amount)) !important;
+}
+
+/* 为不同大小的文本添加不同的模糊效果 */
+h1.blur-plugin-editor {
+    filter: blur(calc(var(--blur-amount) * 2)) !important;
+}
+
+h2.blur-plugin-editor {
+    filter: blur(calc(var(--blur-amount) * 1.75)) !important;
+}
+
+h3.blur-plugin-editor {
+    filter: blur(calc(var(--blur-amount) * 1.5)) !important;
+}
+
+h4.blur-plugin-editor {
+    filter: blur(calc(var(--blur-amount) * 1.25)) !important;
+}
+
+/* 对于使用内联样式的元素 */
+h1[style*="filter: blur"],
+h2[style*="filter: blur"],
+h3[style*="filter: blur"],
+h4[style*="filter: blur"] {
+    filter: blur(calc(var(--blur-amount) * 2)) !important;
 }
 
 /* 确保模糊效果应用到编辑器的所有子元素 */
@@ -162,4 +187,84 @@ If your plugin does not need CSS, delete this file.
 
 .keyword-item button:hover {
     color: var(--text-error);
+}
+
+.blur-manage-panel {
+    position: fixed;
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    z-index: 1000;
+    top: 50px;
+    left: 20px;
+    pointer-events: auto !important;
+    filter: none !important;
+}
+
+.blur-manage-panel * {
+    pointer-events: auto !important;
+    filter: none !important;
+}
+
+.blur-panel-handle {
+    padding: 10px;
+    background: var(--background-secondary);
+    border-radius: 8px 8px 0 0;
+    cursor: move;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.blur-panel-close {
+    cursor: pointer;
+    padding: 0 8px;
+}
+
+.blur-panel-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.blur-panel-tab {
+    padding: 8px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.blur-panel-tab.active {
+    border-bottom-color: var(--interactive-accent);
+    color: var(--interactive-accent);
+}
+
+.blur-panel-content {
+    padding: 16px;
+}
+
+.keyword-input-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.keyword-add-button {
+    padding: 4px 12px;
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* 编辑器元素的预设高亮 */
+.blur-plugin-preset {
+    outline: 2px solid rgba(0, 255, 0, 0.7) !important;
+}
+
+/* 编辑器元素的悬停高亮 */
+.blur-plugin-hover {
+    outline: 2px solid rgba(255, 0, 0, 0.7) !important;
 }

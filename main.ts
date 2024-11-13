@@ -9,7 +9,7 @@ interface MyPluginSettings {
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
-	blurAmount: '5px',
+	blurAmount: '0.5em',
 	isSelectingMode: false,
 	isBlurActive: false,
 	presets: [],
@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 
 export default class BlurPlugin extends Plugin {
 	settings: MyPluginSettings;
-	presetPanel: PresetPanel | null = null;
+	blurPanel: BlurManagePanel | null = null;
 
 	async onload() {
 		await this.loadSettings();
@@ -26,9 +26,21 @@ export default class BlurPlugin extends Plugin {
 		this.addSettingTab(new BlurSettingTab(this.app, this));
 
 		this.addCommand({
-			id: 'manage-blur-presets',
-			name: 'Manage Blur Presets',
-			callback: () => this.toggleSelectingMode(),
+			id: 'manage-blur',
+			name: 'Manage Blur Settings',
+			callback: () => {
+				if (this.blurPanel) {
+					this.blurPanel.close();
+					this.blurPanel = null;
+					this.settings.isSelectingMode = false;
+					this.removeAllHighlights();
+				} else {
+					this.blurPanel = new BlurManagePanel(this);
+					this.blurPanel.open();
+					this.settings.isSelectingMode = true;
+				}
+				this.saveSettings();
+			},
 		});
 
 		this.addRibbonIcon('eye-off', 'Toggle Blur Effect', (evt) => {
@@ -71,16 +83,16 @@ export default class BlurPlugin extends Plugin {
 		
 		if (this.settings.isSelectingMode) {
 			this.showCurrentPresets();
-			this.presetPanel = new PresetPanel(this);
-			this.presetPanel.open();
-			new Notice('Entered preset selection mode');
+			this.blurPanel = new BlurManagePanel(this);
+			this.blurPanel.open();
+			new Notice('Entered blur management mode');
 		} else {
 			this.removeAllHighlights();
-			if (this.presetPanel) {
-				this.presetPanel.close();
-				this.presetPanel = null;
+			if (this.blurPanel) {
+				this.blurPanel.close();
+				this.blurPanel = null;
 			}
-			new Notice('Exited preset selection mode');
+			new Notice('Exited blur management mode');
 		}
 		
 		this.saveSettings();
@@ -113,7 +125,7 @@ export default class BlurPlugin extends Plugin {
 		if (!target || 
 			target === document.body || 
 			this.isRibbonElement(target) ||
-			this.isPresetPanelElement(target)) return;
+			this.isManagePanelElement(target)) return;
 
 		const selector = this.getElementSelector(target);
 		if (!selector) return;
@@ -131,8 +143,8 @@ export default class BlurPlugin extends Plugin {
 		
 		await this.saveSettings();
 		
-		if (this.presetPanel) {
-			this.presetPanel.updatePresetList(this.presetPanel.containerEl.querySelector('.preset-list-container'));
+		if (this.blurPanel) {
+			this.blurPanel.updatePresetList(this.blurPanel.containerEl.querySelector('.selector-container'));
 		}
 	}
 
@@ -140,7 +152,7 @@ export default class BlurPlugin extends Plugin {
 		if (!target || 
 			target === document.body || 
 			this.isRibbonElement(target) ||
-			this.isPresetPanelElement(target)) return;
+			this.isManagePanelElement(target)) return;
 		
 		if (!this.settings.isSelectingMode) return;
 		
@@ -216,15 +228,19 @@ export default class BlurPlugin extends Plugin {
 	}
 
 	removeAllHighlights() {
-		const highlightedElements = document.querySelectorAll('[style*="outline"]');
-		
-		highlightedElements.forEach((el) => {
-			const element = el as HTMLElement;
-			const originalFilter = element.style.filter;
-			if (originalFilter) {
-				element.style.filter = originalFilter;
-			}
-			element.style.removeProperty('outline');
+		// 清除选择高亮
+		document.querySelectorAll('.blur-plugin-selecting').forEach(el => {
+			el.classList.remove('blur-plugin-selecting');
+		});
+
+		// 清除预设高亮
+		document.querySelectorAll('.blur-plugin-preset').forEach(el => {
+			el.classList.remove('blur-plugin-preset');
+		});
+
+		// 清除内联样式的高亮
+		document.querySelectorAll('[style*="outline"]').forEach(el => {
+			(el as HTMLElement).style.removeProperty('outline');
 		});
 	}
 
@@ -276,13 +292,39 @@ export default class BlurPlugin extends Plugin {
 			   element.closest('.side-dock-ribbon') !== null;
 	}
 
-	isPresetPanelElement(element: HTMLElement): boolean {
-		return element.closest('.preset-panel') !== null;
+	isManagePanelElement(element: HTMLElement): boolean {
+		return element.closest('.blur-manage-panel') !== null;
 	}
 
 	applyBlurEffects() {
-		this.applyBlurToPresets();
-		this.applyKeywordBlur();
+		this.settings.presets.forEach(selector => {
+			const elements = document.querySelectorAll(selector);
+			elements.forEach(element => {
+				if (element && !this.isManagePanelElement(element as HTMLElement)) {
+					const el = element as HTMLElement;
+					if (this.isEditorElement(el)) {
+						el.classList.add('blur-plugin-editor');
+					} else {
+						// 根据元素类型调整模糊量
+						const tagName = el.tagName.toLowerCase();
+						let blurMultiplier = 1;
+						if (tagName === 'h1') blurMultiplier = 2;
+						else if (tagName === 'h2') blurMultiplier = 1.75;
+						else if (tagName === 'h3') blurMultiplier = 1.5;
+						else if (tagName === 'h4') blurMultiplier = 1.25;
+
+						const blurValue = this.settings.blurAmount;
+						const baseBlur = parseFloat(blurValue);
+						const unit = blurValue.replace(/[\d.]/g, '');
+						el.style.filter = `blur(${baseBlur * blurMultiplier}${unit})`;
+					}
+				}
+			});
+		});
+
+		if (this.settings.keywords.length > 0) {
+			this.applyKeywordBlur();
+		}
 	}
 
 	applyKeywordBlur() {
@@ -312,7 +354,7 @@ export default class BlurPlugin extends Plugin {
 			const content = textNode.textContent || '';
 			if (this.settings.keywords.some(keyword => content.includes(keyword))) {
 				const parent = textNode.parentElement;
-				if (parent && !this.isPresetPanelElement(parent) && !this.isRibbonElement(parent)) {
+				if (parent && !this.isManagePanelElement(parent) && !this.isRibbonElement(parent)) {
 					if (this.isEditorElement(parent)) {
 						parent.classList.add('blur-plugin-editor');
 					} else {
@@ -338,18 +380,19 @@ class BlurSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Blur Amount')
-			.setDesc('Enter the blur amount (e.g. 5px)')
+			.setDesc('Enter the blur amount (e.g. 0.5em). Larger values create stronger blur effects.')
 			.addText(text => text
-				.setPlaceholder('5px')
+				.setPlaceholder('0.5em')
 				.setValue(this.plugin.settings.blurAmount)
 				.onChange(async (value) => {
+					if (!isNaN(parseFloat(value)) && !value.includes('em')) {
+						value = value + 'em';
+					}
 					this.plugin.settings.blurAmount = value;
 					await this.plugin.saveSettings();
-					
 					document.documentElement.style.setProperty('--blur-amount', value);
-					
 					if (this.plugin.settings.isBlurActive) {
-						this.plugin.applyBlurToPresets();
+						this.plugin.applyBlurEffects();
 					}
 				}));
 
@@ -404,7 +447,7 @@ class BlurSettingTab extends PluginSettingTab {
 	}
 }
 
-class PresetPanel {
+class BlurManagePanel {
 	plugin: BlurPlugin;
 	containerEl: HTMLElement;
 	dragHandle: HTMLElement;
@@ -419,23 +462,54 @@ class PresetPanel {
 	constructor(plugin: BlurPlugin) {
 		this.plugin = plugin;
 		this.containerEl = document.createElement('div');
-		this.containerEl.addClass('preset-panel');
+		this.containerEl.addClass('blur-manage-panel');
 		
-		this.dragHandle = this.containerEl.createDiv('preset-panel-handle');
-		this.dragHandle.setText('Preset Elements');
+		this.dragHandle = this.containerEl.createDiv('blur-panel-handle');
+		this.dragHandle.setText('Blur Management');
 		
 		const closeButton = this.dragHandle.createEl('span', {text: '×'});
-		closeButton.addClass('preset-panel-close');
+		closeButton.addClass('blur-panel-close');
 		closeButton.addEventListener('click', () => {
-			this.close();
-			this.plugin.toggleSelectingMode();
+			if (this.plugin.blurPanel) {
+				this.plugin.blurPanel.close();
+				this.plugin.blurPanel = null;
+				this.plugin.settings.isSelectingMode = false;
+				this.plugin.removeAllHighlights();
+				this.plugin.saveSettings();
+			}
 		});
 
-		const listContainer = this.containerEl.createDiv('preset-list-container');
-		this.updatePresetList(listContainer);
+		const tabsContainer = this.containerEl.createDiv('blur-panel-tabs');
 		
-		this.setTranslate(this.xOffset, this.yOffset);
+		const selectorTab = tabsContainer.createDiv('blur-panel-tab active');
+		selectorTab.setText('CSS Selector');
+		const keywordTab = tabsContainer.createDiv('blur-panel-tab');
+		keywordTab.setText('Keywords');
 
+		const contentContainer = this.containerEl.createDiv('blur-panel-content');
+		
+		const selectorContainer = contentContainer.createDiv('selector-container');
+		this.updatePresetList(selectorContainer);
+
+		const keywordContainer = contentContainer.createDiv('keyword-container');
+		keywordContainer.style.display = 'none';
+		this.createKeywordUI(keywordContainer);
+
+		selectorTab.addEventListener('click', () => {
+			selectorTab.addClass('active');
+			keywordTab.removeClass('active');
+			selectorContainer.style.display = 'block';
+			keywordContainer.style.display = 'none';
+		});
+
+		keywordTab.addEventListener('click', () => {
+			keywordTab.addClass('active');
+			selectorTab.removeClass('active');
+			keywordContainer.style.display = 'block';
+			selectorContainer.style.display = 'none';
+		});
+
+		this.setTranslate(this.xOffset, this.yOffset);
 		this.setupDrag();
 	}
 
@@ -546,6 +620,66 @@ class PresetPanel {
 		}
 
 		this.containerEl.style.transform = currentTransform;
+	}
+
+	createKeywordUI(container: HTMLElement) {
+		const inputContainer = container.createDiv('keyword-input-container');
+		const input = inputContainer.createEl('input', {
+			type: 'text',
+			placeholder: 'Enter keyword'
+		});
+		const addButton = inputContainer.createEl('button', {
+			text: 'Add',
+			cls: 'keyword-add-button'
+		});
+
+		addButton.addEventListener('click', async () => {
+			const keyword = input.value.trim();
+			if (keyword && !this.plugin.settings.keywords.includes(keyword)) {
+				this.plugin.settings.keywords.push(keyword);
+				await this.plugin.saveSettings();
+				this.updateKeywordsList(listContainer);
+				input.value = '';
+				if (this.plugin.settings.isBlurActive) {
+					this.plugin.applyBlurEffects();
+				}
+			}
+		});
+
+		const listContainer = container.createDiv('keyword-list-container');
+		this.updateKeywordsList(listContainer);
+	}
+
+	updateKeywordsList(container: HTMLElement) {
+		container.empty();
+		
+		if (this.plugin.settings.keywords.length === 0) {
+			container.createEl('p', {text: 'No keywords added'});
+			return;
+		}
+
+		const list = container.createEl('ul');
+		list.addClass('keyword-list');
+		
+		this.plugin.settings.keywords.forEach((keyword, index) => {
+			const item = list.createEl('li');
+			item.addClass('keyword-item');
+			
+			const keywordText = item.createSpan({text: keyword});
+			keywordText.addClass('keyword-text');
+			
+			const deleteBtn = item.createEl('span', {text: '×'});
+			deleteBtn.addClass('keyword-delete-btn');
+			
+			deleteBtn.addEventListener('click', async () => {
+				this.plugin.settings.keywords.splice(index, 1);
+				await this.plugin.saveSettings();
+				this.updateKeywordsList(container);
+				if (this.plugin.settings.isBlurActive) {
+					this.plugin.applyBlurEffects();
+				}
+			});
+		});
 	}
 }
 
