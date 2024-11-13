@@ -5,7 +5,7 @@ A plugin for Obsidian that allows you to selectively blur elements in your notes
 ## Features
 
 - **Selective Blurring**: Choose specific elements to blur in your notes
-- **Preset Management**: Create and manage multiple blur presets
+- **Preset Management**: Create and manage blur presets
 - **Easy Selection**: Visual interface for selecting elements with real-time preview
 - **Draggable Panel**: Convenient preset management panel that can be moved around
 - **Customizable Blur**: Adjust the blur amount to your preference
@@ -15,7 +15,7 @@ A plugin for Obsidian that allows you to selectively blur elements in your notes
 ### Managing Presets
 
 1. Open the command palette (Cmd/Ctrl + P)
-2. Run the "Start Selecting for Preset" command
+2. Run the "Blur Mode:Manage Blur Presets" command
 3. A draggable panel will appear showing your current presets
 4. Hover over elements to see a preview (yellow highlight)
 5. Click elements to add them to your preset (green highlight)
@@ -88,7 +88,7 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 ## Acknowledgments
 
 - Thanks to the Obsidian team for their excellent API
-- Inspired by privacy needs in note-taking
+- Inspired by [LiteLoaderQQNT-Plugin-Demo-Mode](https://github.com/qianxuu/LiteLoaderQQNT-Plugin-Demo-Mode/tree/main)
 
 ## Changelog
 
@@ -102,5 +102,5 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 
 - [ ] Multiple preset support
 - [ ] Keyboard shortcuts
-- [ ] More customization options
 - [ ] Export/Import presets
+- [ ] Keyword-based blur function to break through the limitations of css selection (such as only blurring specific notes)
