@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting, Notice, Modal } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, Notice } from 'obsidian';
 
 interface MyPluginSettings {
 	blurAmount: string;
@@ -378,7 +378,7 @@ export default class BlurPlugin extends Plugin {
 
 		const textNodes: Text[] = [];
 		let node;
-		while (node = walker.nextNode()) {
+		while ((node = walker.nextNode()) !== null) {
 			textNodes.push(node as Text);
 		}
 
@@ -483,13 +483,13 @@ class BlurManagePanel {
 	plugin: BlurPlugin;
 	containerEl: HTMLElement;
 	dragHandle: HTMLElement;
-	initialX: number = 0;
-	initialY: number = 0;
-	currentX: number = 0;
-	currentY: number = 0;
-	xOffset: number = 20;
-	yOffset: number = 50;
-	active: boolean = false;
+	initialX = 0;
+	initialY = 0;
+	currentX = 0;
+	currentY = 0;
+	xOffset = 20;
+	yOffset = 50;
+	active = false;
 
 	constructor(plugin: BlurPlugin) {
 		this.plugin = plugin;
