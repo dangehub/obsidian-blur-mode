@@ -88,7 +88,7 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 ## Acknowledgments
 
 - Thanks to the Obsidian team for their excellent API
-- Inspired by privacy needs in note-taking
+- Inspired by [LiteLoaderQQNT-Plugin-Demo-Mode](https://github.com/qianxuu/LiteLoaderQQNT-Plugin-Demo-Mode/tree/main)
 
 ## Changelog
 
@@ -102,5 +102,5 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 
 - [ ] Multiple preset support
 - [ ] Keyboard shortcuts
-- [ ] More customization options
 - [ ] Export/Import presets
+- [ ] Keyword-based blur function to break through the limitations of css selection (such as only blurring specific notes)
