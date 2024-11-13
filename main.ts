@@ -72,6 +72,13 @@ export default class BlurPlugin extends Plugin {
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		
+		if (!isNaN(parseFloat(this.settings.blurAmount)) && !this.settings.blurAmount.includes('em')) {
+			this.settings.blurAmount = `${this.settings.blurAmount}em`;
+			await this.saveSettings();
+		}
+		
+		document.documentElement.style.setProperty('--blur-amount', this.settings.blurAmount);
 	}
 
 	async saveSettings() {
@@ -297,6 +304,10 @@ export default class BlurPlugin extends Plugin {
 	}
 
 	applyBlurEffects() {
+		const blurAmount = !this.settings.blurAmount.includes('em') 
+			? `${this.settings.blurAmount}em` 
+			: this.settings.blurAmount;
+
 		this.settings.presets.forEach(selector => {
 			const elements = document.querySelectorAll(selector);
 			elements.forEach(element => {
@@ -313,10 +324,8 @@ export default class BlurPlugin extends Plugin {
 						else if (tagName === 'h3') blurMultiplier = 1.5;
 						else if (tagName === 'h4') blurMultiplier = 1.25;
 
-						const blurValue = this.settings.blurAmount;
-						const baseBlur = parseFloat(blurValue);
-						const unit = blurValue.replace(/[\d.]/g, '');
-						el.style.filter = `blur(${baseBlur * blurMultiplier}${unit})`;
+						const baseBlur = parseFloat(blurAmount);
+						el.style.filter = `blur(${baseBlur * blurMultiplier}em)`;
 					}
 				}
 			});
@@ -329,6 +338,10 @@ export default class BlurPlugin extends Plugin {
 
 	applyKeywordBlur() {
 		if (!this.settings.keywords.length) return;
+
+		const blurAmount = !this.settings.blurAmount.includes('em') 
+			? `${this.settings.blurAmount}em` 
+			: this.settings.blurAmount;
 
 		const walker = document.createTreeWalker(
 			document.body,
@@ -358,7 +371,7 @@ export default class BlurPlugin extends Plugin {
 					if (this.isEditorElement(parent)) {
 						parent.classList.add('blur-plugin-editor');
 					} else {
-						parent.style.filter = `blur(${this.settings.blurAmount})`;
+						parent.style.filter = `blur(${blurAmount})`;
 					}
 				}
 			}
