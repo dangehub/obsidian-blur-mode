@@ -1,6 +1,8 @@
 import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
+import fs from "fs";
+import path from "path";
 
 const banner =
 `/*
@@ -11,39 +13,80 @@ if you want to view the source, please visit the github repository of this plugi
 
 const prod = (process.argv[2] === "production");
 
+// 复制文件
+const copyFile = (source, target) => {
+    fs.copyFileSync(source, target);
+};
+
+// 复制所有必要的文件
+const copyFiles = () => {
+    // 开发模式下直接复制到根目录
+    if (!prod) {
+        copyFile('src/styles.css', 'styles.css');
+        return;
+    }
+
+    // 生产模式下复制到 dist 目录
+    ensureDir('dist');
+    copyFile('src/styles.css', 'dist/styles.css');
+    if (fs.existsSync('manifest.json')) {
+        copyFile('manifest.json', 'dist/manifest.json');
+    }
+    if (fs.existsSync('versions.json')) {
+        copyFile('versions.json', 'dist/versions.json');
+    }
+};
+
+// 确保目标目录存在
+const ensureDir = (dir) => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+};
+
 const context = await esbuild.context({
-	banner: {
-		js: banner,
-	},
-	entryPoints: ["main.ts"],
-	bundle: true,
-	external: [
-		"obsidian",
-		"electron",
-		"@codemirror/autocomplete",
-		"@codemirror/collab",
-		"@codemirror/commands",
-		"@codemirror/language",
-		"@codemirror/lint",
-		"@codemirror/search",
-		"@codemirror/state",
-		"@codemirror/view",
-		"@lezer/common",
-		"@lezer/highlight",
-		"@lezer/lr",
-		...builtins],
-	format: "cjs",
-	target: "es2018",
-	logLevel: "info",
-	sourcemap: prod ? false : "inline",
-	treeShaking: true,
-	outfile: "main.js",
-	minify: prod,
+    banner: {
+        js: banner,
+    },
+    entryPoints: ["src/main.ts"],
+    bundle: true,
+    external: [
+        "obsidian",
+        "electron",
+        "@codemirror/autocomplete",
+        "@codemirror/collab",
+        "@codemirror/commands",
+        "@codemirror/language",
+        "@codemirror/lint",
+        "@codemirror/search",
+        "@codemirror/state",
+        "@codemirror/view",
+        "@lezer/common",
+        "@lezer/highlight",
+        "@lezer/lr",
+        ...builtins
+    ],
+    format: "cjs",
+    target: "es2018",
+    logLevel: "info",
+    sourcemap: prod ? false : "inline",
+    treeShaking: true,
+    outfile: prod ? "dist/main.js" : "main.js", // 开发模式输出到根目录
+    minify: prod,
 });
 
 if (prod) {
-	await context.rebuild();
-	process.exit(0);
+    await context.rebuild();
+    copyFiles();
+    process.exit(0);
 } else {
-	await context.watch();
+    await context.watch();
+    copyFiles();
+    console.log("[watch] build finished, watching for changes...");
 }
+
+// 处理清理工作
+process.on('SIGINT', () => {
+    context.dispose();
+    process.exit(0);
+});
