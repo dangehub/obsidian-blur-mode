@@ -251,17 +251,8 @@ h4[style*="filter: blur"] {
 }
 
 .keyword-add-button {
-    padding: 4px 12px;
-    background: var(--interactive-accent);
-    color: var(--text-on-accent);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.keyword-add-button:hover {
-    background: var(--interactive-accent-hover);
+    opacity: 1 !important;
+    color: var(--text-normal) !important;
 }
 
 /* 编辑器元素的预设高亮 */

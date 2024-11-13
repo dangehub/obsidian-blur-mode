@@ -151,7 +151,10 @@ export default class BlurPlugin extends Plugin {
 		await this.saveSettings();
 		
 		if (this.blurPanel) {
-			this.blurPanel.updatePresetList(this.blurPanel.containerEl.querySelector('.selector-container'));
+			const container = this.blurPanel.containerEl.querySelector('.selector-container');
+			if (container instanceof HTMLElement) {
+				this.blurPanel.updatePresetList(container);
+			}
 		}
 	}
 
@@ -586,7 +589,6 @@ class BlurManagePanel {
 
 	updatePresetList(container: HTMLElement) {
 		const currentTransform = this.containerEl.style.transform;
-		
 		container.empty();
 		
 		if (this.plugin.settings.presets.length === 0) {
@@ -607,30 +609,24 @@ class BlurManagePanel {
 				
 				item.addEventListener('mouseenter', () => {
 					const element = document.querySelector(selector);
-					if (element) {
-						const el = element as HTMLElement;
-						if (this.plugin.isEditorElement(el)) {
-							// 对于编辑器元素，使用类来切换高亮
-							el.classList.remove('blur-plugin-preset');
-							el.classList.add('blur-plugin-hover');
+					if (element instanceof HTMLElement) {
+						if (this.plugin.isEditorElement(element)) {
+							element.classList.remove('blur-plugin-preset');
+							element.classList.add('blur-plugin-hover');
 						} else {
-							// 对于其他元素，使用样式
-							el.style.outline = '2px solid rgba(255, 0, 0, 0.7)';
+							element.style.outline = '2px solid rgba(255, 0, 0, 0.7)';
 						}
 					}
 				});
 				
 				item.addEventListener('mouseleave', () => {
 					const element = document.querySelector(selector);
-					if (element) {
-						const el = element as HTMLElement;
-						if (this.plugin.isEditorElement(el)) {
-							// 恢复编辑器元素的预设高亮
-							el.classList.remove('blur-plugin-hover');
-							el.classList.add('blur-plugin-preset');
+					if (element instanceof HTMLElement) {
+						if (this.plugin.isEditorElement(element)) {
+							element.classList.remove('blur-plugin-hover');
+							element.classList.add('blur-plugin-preset');
 						} else {
-							// 恢复其他元素的预设高亮
-							el.style.outline = '2px solid rgba(0, 255, 0, 0.7)';
+							element.style.outline = '2px solid rgba(0, 255, 0, 0.7)';
 						}
 					}
 				});
@@ -638,12 +634,11 @@ class BlurManagePanel {
 				deleteBtn.addEventListener('click', async (e) => {
 					e.stopPropagation();
 					const element = document.querySelector(selector);
-					if (element) {
-						const el = element as HTMLElement;
-						if (this.plugin.isEditorElement(el)) {
-							el.classList.remove('blur-plugin-preset', 'blur-plugin-hover');
+					if (element instanceof HTMLElement) {
+						if (this.plugin.isEditorElement(element)) {
+							element.classList.remove('blur-plugin-preset', 'blur-plugin-hover');
 						} else {
-							el.style.removeProperty('outline');
+							element.style.removeProperty('outline');
 						}
 					}
 					this.plugin.settings.presets.splice(index, 1);
