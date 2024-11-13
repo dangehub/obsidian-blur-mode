@@ -1,11 +1,11 @@
 {
-	"id": "blur-mode",
+	"id": "aqu-blur-mode",
 	"name": "Blur Mode",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "Blur anything you want to keep your privacy.",
 	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"authorUrl": "https://github.com/dangehub",
+	"fundingUrl": "",
 	"isDesktopOnly": false
 }

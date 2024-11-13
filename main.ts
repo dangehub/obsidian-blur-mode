@@ -595,14 +595,30 @@ class BlurManagePanel {
 				item.addEventListener('mouseenter', () => {
 					const element = document.querySelector(selector);
 					if (element) {
-						(element as HTMLElement).style.outline = '2px solid rgba(255, 0, 0, 0.7)';
+						const el = element as HTMLElement;
+						if (this.plugin.isEditorElement(el)) {
+							// 对于编辑器元素，使用类来切换高亮
+							el.classList.remove('blur-plugin-preset');
+							el.classList.add('blur-plugin-hover');
+						} else {
+							// 对于其他元素，使用样式
+							el.style.outline = '2px solid rgba(255, 0, 0, 0.7)';
+						}
 					}
 				});
 				
 				item.addEventListener('mouseleave', () => {
 					const element = document.querySelector(selector);
 					if (element) {
-						(element as HTMLElement).style.outline = '2px solid rgba(0, 255, 0, 0.7)';
+						const el = element as HTMLElement;
+						if (this.plugin.isEditorElement(el)) {
+							// 恢复编辑器元素的预设高亮
+							el.classList.remove('blur-plugin-hover');
+							el.classList.add('blur-plugin-preset');
+						} else {
+							// 恢复其他元素的预设高亮
+							el.style.outline = '2px solid rgba(0, 255, 0, 0.7)';
+						}
 					}
 				});
 				
@@ -610,7 +626,12 @@ class BlurManagePanel {
 					e.stopPropagation();
 					const element = document.querySelector(selector);
 					if (element) {
-						(element as HTMLElement).style.removeProperty('outline');
+						const el = element as HTMLElement;
+						if (this.plugin.isEditorElement(el)) {
+							el.classList.remove('blur-plugin-preset', 'blur-plugin-hover');
+						} else {
+							el.style.removeProperty('outline');
+						}
 					}
 					this.plugin.settings.presets.splice(index, 1);
 					await this.plugin.saveSettings();

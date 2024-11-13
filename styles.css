@@ -257,6 +257,11 @@ h4[style*="filter: blur"] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 14px;
+}
+
+.keyword-add-button:hover {
+    background: var(--interactive-accent-hover);
 }
 
 /* 编辑器元素的预设高亮 */
