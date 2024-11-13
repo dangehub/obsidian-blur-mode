@@ -19,10 +19,19 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 export default class BlurPlugin extends Plugin {
 	settings: MyPluginSettings;
 	blurPanel: BlurManagePanel | null = null;
+	private ribbonIcon: HTMLElement | null = null;
 
 	async onload() {
 		await this.loadSettings();
 		
+		this.ribbonIcon = this.addRibbonIcon(
+			this.settings.isBlurActive ? 'eye' : 'eye-off',
+			'Toggle Blur Effect',
+			(evt) => {
+				this.toggleBlurEffect();
+			}
+		);
+
 		this.addSettingTab(new BlurSettingTab(this.app, this));
 
 		this.addCommand({
@@ -41,10 +50,6 @@ export default class BlurPlugin extends Plugin {
 				}
 				this.saveSettings();
 			},
-		});
-
-		this.addRibbonIcon('eye-off', 'Toggle Blur Effect', (evt) => {
-			this.toggleBlurEffect();
 		});
 
 		this.registerDomEvent(document, 'mouseover', (event) => {
@@ -117,6 +122,17 @@ export default class BlurPlugin extends Plugin {
 	toggleBlurEffect() {
 		this.settings.isBlurActive = !this.settings.isBlurActive;
 		
+		if (this.ribbonIcon) {
+			this.ribbonIcon.remove();
+			this.ribbonIcon = this.addRibbonIcon(
+				this.settings.isBlurActive ? 'eye' : 'eye-off',
+				'Toggle Blur Effect',
+				(evt) => {
+					this.toggleBlurEffect();
+				}
+			);
+		}
+		
 		if (this.settings.isBlurActive) {
 			this.applyBlurEffects();
 			new Notice('Blur effect enabled');
@@ -151,10 +167,7 @@ export default class BlurPlugin extends Plugin {
 		await this.saveSettings();
 		
 		if (this.blurPanel) {
-			const container = this.blurPanel.containerEl.querySelector('.selector-container');
-			if (container instanceof HTMLElement) {
-				this.blurPanel.updatePresetList(container);
-			}
+			this.blurPanel.updatePresetList(this.blurPanel.containerEl.querySelector('.selector-container'));
 		}
 	}
 
