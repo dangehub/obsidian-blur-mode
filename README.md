@@ -100,6 +100,7 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 - When the blur effect is turned on and off, the ribbon icon will change
   
 ### 1.0.1
+- Add keywords blur
 - Merges css selectors and keywords
 - Use github action to release
 
