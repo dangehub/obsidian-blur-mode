@@ -13,6 +13,10 @@ export default class BlurPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
         
+        // 强制设置选择模式为关闭状态
+        this.settings.isSelectingMode = false;
+        await this.saveSettings();
+        
         this.blurManager = new BlurManager(this);
 
         // 添加 ribbon 图标

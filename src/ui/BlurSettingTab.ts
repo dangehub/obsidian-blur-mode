@@ -14,10 +14,10 @@ export class BlurSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        containerEl.createEl('h2', { text: 'Blur Mode Settings' });
+        containerEl.createEl('h2', { text: 'Blur mode settings' });
 
         new Setting(containerEl)
-            .setName('Blur Amount')
+            .setName('Blur amount')
             .setDesc('Set the amount of blur (in em)')
             .addText(text => text
                 .setPlaceholder('0.5em')
@@ -31,10 +31,10 @@ export class BlurSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Manage Presets')
+            .setName('Manage presets')
             .setDesc('Open the preset management panel')
             .addButton(button => button
-                .setButtonText('Open Panel')
+                .setButtonText('Open panel')
                 .onClick(() => {
                     if (!this.plugin.blurPanel) {
                         this.plugin.blurPanel = new BlurManagePanel(this.plugin);
@@ -43,7 +43,7 @@ export class BlurSettingTab extends PluginSettingTab {
                 }));
 
         // 添加关键词列表显示
-        containerEl.createEl('h3', { text: 'Current Keywords' });
+        containerEl.createEl('h3', { text: 'Current keywords' });
         const keywordList = containerEl.createEl('ul');
         this.plugin.settings.keywords.forEach((keyword: string) => {
             keywordList.createEl('li', { text: keyword });

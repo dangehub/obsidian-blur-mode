@@ -19,7 +19,7 @@ export class BlurManagePanel {
         this.containerEl.addClass('blur-manage-panel');
         
         this.dragHandle = this.containerEl.createDiv('blur-panel-handle');
-        this.dragHandle.setText('Blur Management');
+        this.dragHandle.setText('Blur management');
         
         const closeButton = this.dragHandle.createEl('span', {text: '×'});
         closeButton.addClass('blur-panel-close');
