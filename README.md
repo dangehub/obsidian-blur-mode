@@ -92,6 +92,17 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 
 ## Changelog
 
+### 1.0.3
+- Refactor code
+
+### 1.0.2
+- Use the floating panel to select css and add keywords
+- When the blur effect is turned on and off, the ribbon icon will change
+  
+### 1.0.1
+- Merges css selectors and keywords
+- Use github action to release
+
 ### 1.0.0
 - Initial release
 - Basic blur functionality
