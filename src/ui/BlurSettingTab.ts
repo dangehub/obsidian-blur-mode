@@ -14,7 +14,7 @@ export class BlurSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        containerEl.createEl('h2', { text: 'Blur mode settings' });
+        new Setting(containerEl).setName('Blur mode settings').setHeading();
 
         new Setting(containerEl)
             .setName('Blur amount')
@@ -43,7 +43,7 @@ export class BlurSettingTab extends PluginSettingTab {
                 }));
 
         // 添加关键词列表显示
-        containerEl.createEl('h3', { text: 'Current keywords' });
+        new Setting(containerEl).setName('Current keywords').setHeading();
         const keywordList = containerEl.createEl('ul');
         this.plugin.settings.keywords.forEach((keyword: string) => {
             keywordList.createEl('li', { text: keyword });
