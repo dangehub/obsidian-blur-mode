@@ -46,25 +46,32 @@ export class BlurManagePanel {
         this.updatePresetList(selectorContainer);
 
         const keywordContainer = contentContainer.createDiv('keyword-container');
-        keywordContainer.style.display = 'none';
+        keywordContainer.classList.add('panel-container-hidden');
         this.createKeywordUI(keywordContainer);
 
         selectorTab.addEventListener('click', () => {
             selectorTab.addClass('active');
             keywordTab.removeClass('active');
-            selectorContainer.style.display = 'block';
-            keywordContainer.style.display = 'none';
+            selectorContainer.classList.remove('panel-container-hidden');
+            selectorContainer.classList.add('panel-container-visible');
+            keywordContainer.classList.remove('panel-container-visible');
+            keywordContainer.classList.add('panel-container-hidden');
         });
 
         keywordTab.addEventListener('click', () => {
             keywordTab.addClass('active');
             selectorTab.removeClass('active');
-            keywordContainer.style.display = 'block';
-            selectorContainer.style.display = 'none';
+            keywordContainer.classList.remove('panel-container-hidden');
+            keywordContainer.classList.add('panel-container-visible');
+            selectorContainer.classList.remove('panel-container-visible');
+            selectorContainer.classList.add('panel-container-hidden');
         });
 
         this.setTranslate(this.xOffset, this.yOffset);
         this.setupDrag();
+        this.containerEl.classList.add('panel-draggable');
+        this.containerEl.style.setProperty('--panel-x', '0px');
+        this.containerEl.style.setProperty('--panel-y', '0px');
     }
 
     setupDrag() {
@@ -111,7 +118,9 @@ export class BlurManagePanel {
     setTranslate(xPos: number, yPos: number) {
         this.currentX = xPos;
         this.currentY = yPos;
-        this.containerEl.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+        this.containerEl.style.setProperty('--panel-x', `${xPos}px`);
+        this.containerEl.style.setProperty('--panel-y', `${yPos}px`);
+        this.containerEl.classList.add('panel-draggable');
     }
 
     updatePresetList(container: HTMLElement) {
@@ -142,39 +151,42 @@ export class BlurManagePanel {
         item.addEventListener('mouseenter', () => {
             const element = document.querySelector(selector);
             if (element instanceof HTMLElement) {
-                if (this.plugin.isEditorElement(element)) {
-                    element.classList.remove('blur-plugin-preset');
-                    element.classList.add('blur-plugin-hover');
-                } else {
-                    element.style.outline = '2px solid rgba(255, 0, 0, 0.7)';
-                }
+                element.classList.remove('blur-plugin-preset');
+                element.classList.add('blur-plugin-hover');
             }
         });
         
         item.addEventListener('mouseleave', () => {
             const element = document.querySelector(selector);
             if (element instanceof HTMLElement) {
-                if (this.plugin.isEditorElement(element)) {
-                    element.classList.remove('blur-plugin-hover');
-                    element.classList.add('blur-plugin-preset');
-                } else {
-                    element.style.outline = '2px solid rgba(0, 255, 0, 0.7)';
-                }
+                element.classList.remove('blur-plugin-hover');
+                element.classList.add('blur-plugin-preset');
             }
         });
         
         deleteBtn.addEventListener('click', async () => {
             const element = document.querySelector(selector);
             if (element instanceof HTMLElement) {
-                if (this.plugin.isEditorElement(element)) {
-                    element.classList.remove('blur-plugin-preset', 'blur-plugin-hover');
-                } else {
-                    element.style.removeProperty('outline');
-                }
+                element.classList.remove('blur-plugin-preset', 'blur-plugin-hover', 'blur-plugin-selecting');
             }
+            
             this.plugin.settings.presets.splice(index, 1);
             await this.plugin.saveSettings();
+            
+            // 更新预设列表
             this.updatePresetList(this.containerEl.querySelector('.selector-container') as HTMLElement);
+            
+            // 如果是最后一个元素被删除，清理所有高亮效果
+            if (this.plugin.settings.presets.length === 0) {
+                document.querySelectorAll('.blur-plugin-preset, .blur-plugin-hover, .blur-plugin-selecting').forEach(el => {
+                    el.classList.remove('blur-plugin-preset', 'blur-plugin-hover', 'blur-plugin-selecting');
+                });
+            }
+            
+            // 重新应用模糊效果
+            if (this.plugin.settings.isBlurActive) {
+                this.plugin.blurManager.applyBlurEffects();
+            }
         });
     }
 
@@ -264,14 +276,14 @@ export class BlurManagePanel {
             if (element instanceof HTMLElement) {
                 // 清除所有可能的高亮样式
                 element.classList.remove('blur-plugin-preset', 'blur-plugin-hover');
-                element.style.removeProperty('outline');
+                element.classList.add('element-highlight-error');
             }
         });
 
         // 清除任何可能的临时高亮
         document.querySelectorAll('[style*="outline"]').forEach(el => {
             if (el instanceof HTMLElement && this.plugin.isManagePanelElement(el)) {
-                el.style.removeProperty('outline');
+                el.classList.add('element-highlight-error');
             }
         });
     }

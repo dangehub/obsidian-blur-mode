@@ -82,6 +82,15 @@ if (prod) {
 } else {
     await context.watch();
     copyFiles();
+    
+    // 添加 CSS 文件监听
+    fs.watch('src/styles.css', (eventType, filename) => {
+        if (filename) {
+            console.log(`[watch] ${filename} changed, updating...`);
+            copyFiles();
+        }
+    });
+    
     console.log("[watch] build finished, watching for changes...");
 }
 

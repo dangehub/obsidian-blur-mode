@@ -22,11 +22,11 @@ export class PresetManager {
         if (index === -1) {
             this.plugin.settings.presets.push(selector);
             new Notice('Added element to presets');
-            target.style.outline = '2px solid rgba(0, 255, 0, 0.7)';
+            target.classList.add('element-highlight-success');
         } else {
             this.plugin.settings.presets.splice(index, 1);
             new Notice('Removed element from presets');
-            target.style.removeProperty('outline');
+            target.classList.remove('element-highlight-success');
         }
         
         await this.plugin.saveSettings();
@@ -37,9 +37,9 @@ export class PresetManager {
             const element = document.querySelector(selector);
             if (element instanceof HTMLElement) {
                 if (DOMUtils.isEditorElement(element)) {
-                    element.classList.add('blur-plugin-preset');
+                    element.classList.add('element-highlight-success');
                 } else {
-                    element.style.outline = '2px solid rgba(0, 255, 0, 0.7)';
+                    element.classList.add('element-highlight-success');
                 }
             }
         });
@@ -50,9 +50,9 @@ export class PresetManager {
             const element = document.querySelector(selector);
             if (element instanceof HTMLElement) {
                 if (DOMUtils.isEditorElement(element)) {
-                    element.classList.remove('blur-plugin-preset');
+                    element.classList.remove('element-highlight-success');
                 } else {
-                    element.style.removeProperty('outline');
+                    element.classList.remove('element-highlight-success');
                 }
             }
         });
