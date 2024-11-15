@@ -18,8 +18,8 @@ A plugin for Obsidian that allows you to selectively blur elements in your notes
 1. Open the command palette (Cmd/Ctrl + P)
 2. Run the "Blur Mode:Manage Blur Presets" command
 3. A draggable panel will appear showing your current presets
-4. Click elements to add them to your preset (green highlight)
-5. Click again to remove them from the preset
+4. Click elements to add them to your preset (yellow highlight)
+5. Click again to remove them from the preset (red highlight)
 6. Use the × button in the preset panel to remove specific elements
 
 ### Toggling Blur Effect
@@ -91,6 +91,12 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 - Inspired by [LiteLoaderQQNT-Plugin-Demo-Mode](https://github.com/qianxuu/LiteLoaderQQNT-Plugin-Demo-Mode/tree/main)
 
 ## Changelog
+
+### 1.0.4
+
+- Use CSS for styling instead of JS/HTML per Obsidian guidelines
+- Add three-color highlight system (red/yellow/green) for element 
+states
 
 ### 1.0.3
 - Refactor code
