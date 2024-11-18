@@ -92,6 +92,10 @@ If you encounter any issues or have suggestions, please [open an issue](https://
 
 ## Changelog
 
+### 1.0.5
+- Adjust code to comply with official requirements
+- Add Debug-mode
+
 ### 1.0.4
 
 - Use CSS for styling instead of JS/HTML per Obsidian guidelines

@@ -1,7 +1,7 @@
 {
 	"id": "aqu-blur-mode",
 	"name": "Blur Mode",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"minAppVersion": "0.15.0",
 	"description": "Blur anything you want to keep your privacy.",
 	"author": "dangehub",
