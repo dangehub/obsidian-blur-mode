@@ -1,4 +1,4 @@
-# Obsidian Blur Plugin
+# Blur Mode Plugin for Obsidian 
 
 A plugin for Obsidian that allows you to selectively blur elements in your notes for privacy or focus purposes.
 
