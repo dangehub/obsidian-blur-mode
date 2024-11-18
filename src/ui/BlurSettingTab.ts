@@ -14,17 +14,7 @@ export class BlurSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-
-        new Setting(containerEl)
-            .setName('Debug mode')
-            .setDesc('Enable debug mode to show console logs')
-            .addToggle(toggle => toggle
-                .setValue(this.plugin.settings.isDebugMode)
-                .onChange(async (value) => {
-                    this.plugin.settings.isDebugMode = value;
-                    await this.plugin.saveSettings();
-                }));
-
+        // Blur amount setting
         new Setting(containerEl)
             .setName('Blur amount')
             .setDesc('Set the amount of blur (in em)')
@@ -39,6 +29,7 @@ export class BlurSettingTab extends PluginSettingTab {
                     }
                 }));
 
+        // Manage presets setting
         new Setting(containerEl)
             .setName('Manage presets')
             .setDesc('Open the preset management panel')
@@ -51,11 +42,22 @@ export class BlurSettingTab extends PluginSettingTab {
                     }
                 }));
 
-        // 添加关键词列表显示
+        // Keywords list
         new Setting(containerEl).setName('Current keywords').setHeading();
         const keywordList = containerEl.createEl('ul');
         this.plugin.settings.keywords.forEach((keyword: string) => {
             keywordList.createEl('li', { text: keyword });
         });
+
+        // Debug mode setting (moved to bottom)
+        new Setting(containerEl)
+            .setName('Debug mode')
+            .setDesc('Enable debug mode to show console logs')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.isDebugMode)
+                .onChange(async (value) => {
+                    this.plugin.settings.isDebugMode = value;
+                    await this.plugin.saveSettings();
+                }));
     }
 }
