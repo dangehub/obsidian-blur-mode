@@ -4,13 +4,16 @@ import { BlurManager } from './core/BlurManager';
 import { BlurManagePanel } from './ui/BlurManagePanel';
 import { BlurSettingTab } from './ui/BlurSettingTab';
 import { DOMUtils } from './utils/dom';
+import { Logger } from './utils/logger';
 
 export default class BlurPlugin extends Plugin {
     settings: BlurSettings;
     blurManager: BlurManager;
     blurPanel: BlurManagePanel | null = null;
+    logger: Logger;
 
     async onload() {
+        this.logger = new Logger(this);
         await this.loadSettings();
         
         // 强制设置选择模式为关闭状态
@@ -20,7 +23,7 @@ export default class BlurPlugin extends Plugin {
         this.blurManager = new BlurManager(this);
 
         // 添加 ribbon 图标
-        const ribbonIconEl = this.addRibbonIcon('eye-off', 'Blur Mode', (evt: MouseEvent) => {
+        const ribbonIconEl = this.addRibbonIcon('eye-off', 'Blur mode', (evt: MouseEvent) => {
             if (evt.button === 0) { // 左键点击
                 this.settings.isBlurActive = !this.settings.isBlurActive;
                 if (this.settings.isBlurActive) {
@@ -33,6 +36,8 @@ export default class BlurPlugin extends Plugin {
                 if (!this.blurPanel) {
                     this.blurPanel = new BlurManagePanel(this);
                     this.blurPanel.open();
+                    this.settings.isSelectingMode = true;
+                    this.saveSettings();
                 }
             }
         });
@@ -48,7 +53,7 @@ export default class BlurPlugin extends Plugin {
         // 添加命令
         this.addCommand({
             id: 'toggle-blur',
-            name: 'Toggle blur effect',
+            name: 'Toggle   effect',
             callback: () => {
                 this.settings.isBlurActive = !this.settings.isBlurActive;
                 if (this.settings.isBlurActive) {
@@ -63,7 +68,7 @@ export default class BlurPlugin extends Plugin {
         // 添加打开管理面板命令
         this.addCommand({
             id: 'open-blur-panel',
-            name: 'Open blur management panel',
+            name: 'Open management panel',
             callback: () => {
                 if (!this.blurPanel) {
                     this.blurPanel = new BlurManagePanel(this);
@@ -75,7 +80,7 @@ export default class BlurPlugin extends Plugin {
         });
 
         // 添加点击事件监听
-        document.addEventListener('click', this.handleClick.bind(this));
+        this.registerDomEvent(document, 'click', this.handleClick.bind(this));
 
         // 如果设置为激活状态，则应用模糊效果
         if (this.settings.isBlurActive) {
@@ -101,7 +106,15 @@ export default class BlurPlugin extends Plugin {
     }
 
     onunload() {
+        // 清理所有模糊效果
         this.blurManager.removeBlurEffects();
+        
+        // 清理所有高亮效果
+        document.querySelectorAll('.blur-plugin-preset, .blur-plugin-hover, .blur-plugin-selecting').forEach(el => {
+            el.classList.remove('blur-plugin-preset', 'blur-plugin-hover', 'blur-plugin-selecting');
+        });
+        
+        // 关闭面板
         if (this.blurPanel) {
             this.blurPanel.close();
         }

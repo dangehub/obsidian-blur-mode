@@ -6,6 +6,7 @@ export interface BlurSettings {
     isBlurActive: boolean;
     presets: string[];
     keywords: string[];
+    isDebugMode: boolean;
 }
 
 export const DEFAULT_SETTINGS: BlurSettings = {
@@ -13,7 +14,8 @@ export const DEFAULT_SETTINGS: BlurSettings = {
     isSelectingMode: false,
     isBlurActive: false,
     presets: [],
-    keywords: []
+    keywords: [],
+    isDebugMode: false,
 };
 
 export interface BlurPluginInterface extends Plugin {

@@ -8,9 +8,9 @@ export class BlurManager {
     constructor(plugin: BlurPlugin) {
         this.plugin = plugin;
         
-        // 初始化事件监听器
-        document.addEventListener('mouseover', this.handleMouseOver.bind(this));
-        document.addEventListener('mouseout', this.handleMouseOut.bind(this));
+        // 修改鼠标悬停事件的注册方式
+        this.plugin.registerDomEvent(document, 'mouseover', this.handleMouseOver.bind(this));
+        this.plugin.registerDomEvent(document, 'mouseout', this.handleMouseOut.bind(this));
     }
 
     private handleMouseOver(e: MouseEvent) {
@@ -30,13 +30,19 @@ export class BlurManager {
     }
 
     applyBlurEffects() {
+        // 修改这些日志调用
+        this.plugin.logger.debug('Applying blur effects with presets:', this.plugin.settings.presets);
+        
         const blurAmount = !this.plugin.settings.blurAmount.includes('em') 
             ? `${this.plugin.settings.blurAmount}em` 
             : this.plugin.settings.blurAmount;
         document.documentElement.style.setProperty('--blur-amount', blurAmount);
 
         this.plugin.settings.presets.forEach(selector => {
+            this.plugin.logger.debug('Processing selector:', selector);
             const elements = document.querySelectorAll(selector);
+            this.plugin.logger.debug('Found elements:', elements.length);
+            
             elements.forEach(element => {
                 if (element && !this.plugin.isManagePanelElement(element as HTMLElement)) {
                     const el = element as HTMLElement;

@@ -76,8 +76,8 @@ export class BlurManagePanel {
 
     setupDrag() {
         this.dragHandle.addEventListener('mousedown', this.dragStart.bind(this), false);
-        document.addEventListener('mousemove', this.drag.bind(this), false);
-        document.addEventListener('mouseup', this.dragEnd.bind(this), false);
+        this.plugin.registerDomEvent(document, 'mousemove', this.drag.bind(this));
+        this.plugin.registerDomEvent(document, 'mouseup', this.dragEnd.bind(this));
     }
 
     dragStart(e: MouseEvent) {
@@ -148,7 +148,7 @@ export class BlurManagePanel {
     }
 
     setupPresetItemEvents(item: HTMLElement, selector: string, deleteBtn: HTMLElement, index: number) {
-        item.addEventListener('mouseenter', () => {
+        this.plugin.registerDomEvent(item, 'mouseenter', () => {
             const element = document.querySelector(selector);
             if (element instanceof HTMLElement) {
                 element.classList.remove('blur-plugin-preset');
@@ -156,7 +156,7 @@ export class BlurManagePanel {
             }
         });
         
-        item.addEventListener('mouseleave', () => {
+        this.plugin.registerDomEvent(item, 'mouseleave', () => {
             const element = document.querySelector(selector);
             if (element instanceof HTMLElement) {
                 element.classList.remove('blur-plugin-hover');
@@ -164,7 +164,7 @@ export class BlurManagePanel {
             }
         });
         
-        deleteBtn.addEventListener('click', async () => {
+        this.plugin.registerDomEvent(deleteBtn, 'click', async () => {
             const element = document.querySelector(selector);
             if (element instanceof HTMLElement) {
                 element.classList.remove('blur-plugin-preset', 'blur-plugin-hover', 'blur-plugin-selecting');

@@ -14,7 +14,16 @@ export class BlurSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        new Setting(containerEl).setName('Blur mode settings').setHeading();
+
+        new Setting(containerEl)
+            .setName('Debug mode')
+            .setDesc('Enable debug mode to show console logs')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.isDebugMode)
+                .onChange(async (value) => {
+                    this.plugin.settings.isDebugMode = value;
+                    await this.plugin.saveSettings();
+                }));
 
         new Setting(containerEl)
             .setName('Blur amount')
