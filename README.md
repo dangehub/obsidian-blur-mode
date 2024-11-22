@@ -20,6 +20,8 @@ A plugin for Obsidian that allows you to selectively blur elements in your notes
 
 ## How to Use
 
+![gif demo](https://github.com/dangehub/obsidian-blur-mode/blob/master/docs/how-to-use-blur-mode.gif)
+
 ### Managing Presets
 
 1. Open the command palette (Cmd/Ctrl + P)
