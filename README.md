@@ -1,5 +1,12 @@
 # Blur Mode Plugin for Obsidian 
 
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/dangehub/obsidian-blur-mode/total)
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+
 A plugin for Obsidian that allows you to selectively blur elements in your notes for privacy or focus purposes.
 
 ## Features
@@ -126,3 +133,16 @@ states
 - [ ] Keyboard shortcuts
 - [ ] Export/Import presets
 - [x] Keyword-based blur function to break through the limitations of css selection (such as only blurring specific notes)
+
+<!-- links -->
+[your-project-path]:dangehub/obsidian-blur-mode
+[contributors-shield]: https://img.shields.io/github/contributors/dangehub/obsidian-blur-mode.svg?style=flat-square
+[contributors-url]: https://github.com/dangehub/obsidian-blur-mode/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/dangehub/obsidian-blur-mode.svg?style=flat-square
+[forks-url]: https://github.com/dangehub/obsidian-blur-mode/network/members
+[stars-shield]: https://img.shields.io/github/stars/dangehub/obsidian-blur-mode.svg?style=flat-square
+[stars-url]: https://github.com/dangehub/obsidian-blur-mode/stargazers
+[issues-shield]: https://img.shields.io/github/issues/dangehub/obsidian-blur-mode.svg?style=flat-square
+[issues-url]: https://img.shields.io/github/issues/dangehub/obsidian-blur-mode.svg
+[license-shield]: https://img.shields.io/github/license/dangehub/obsidian-blur-mode.svg?style=flat-square
+[license-url]: https://github.com/dangehub/obsidian-blur-mode/blob/master/LICENSE.txt
