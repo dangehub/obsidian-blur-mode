@@ -137,7 +137,7 @@ export class BlurManager {
         const index = this.plugin.settings.presets.indexOf(selector);
         if (index === -1) {
             this.plugin.settings.presets.push(selector);
-            new Notice('Added element to presets');
+            new Notice(this.plugin.t("Added element to presets"));
             element.classList.add('blur-plugin-preset');
 
             // 立即更新面板列表
@@ -149,7 +149,7 @@ export class BlurManager {
             }
         } else {
             this.plugin.settings.presets.splice(index, 1);
-            new Notice('Removed element from presets');
+            new Notice(this.plugin.t("Removed element from presets"));
             element.classList.remove('blur-plugin-preset');
 
             // 立即更新面板列表

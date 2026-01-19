@@ -21,11 +21,11 @@ export class PresetManager {
         const index = this.plugin.settings.presets.indexOf(selector);
         if (index === -1) {
             this.plugin.settings.presets.push(selector);
-            new Notice('Added element to presets');
+            new Notice(this.plugin.t("Added element to presets"));
             target.classList.add('element-highlight-success');
         } else {
             this.plugin.settings.presets.splice(index, 1);
-            new Notice('Removed element from presets');
+            new Notice(this.plugin.t("Removed element from presets"));
             target.classList.remove('element-highlight-success');
         }
         

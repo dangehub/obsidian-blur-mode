@@ -19,7 +19,7 @@ export class BlurManagePanel {
         this.containerEl.addClass('blur-manage-panel');
         
         this.dragHandle = this.containerEl.createDiv('blur-panel-handle');
-        this.dragHandle.setText('Blur management');
+        this.dragHandle.setText(this.plugin.t("Blur management"));
         
         const closeButton = this.dragHandle.createEl('span', {text: '×'});
         closeButton.addClass('blur-panel-close');
@@ -36,9 +36,9 @@ export class BlurManagePanel {
         const tabsContainer = this.containerEl.createDiv('blur-panel-tabs');
         
         const selectorTab = tabsContainer.createDiv('blur-panel-tab active');
-        selectorTab.setText('CSS Selector');
+        selectorTab.setText(this.plugin.t("CSS Selector"));
         const keywordTab = tabsContainer.createDiv('blur-panel-tab');
-        keywordTab.setText('Keywords');
+        keywordTab.setText(this.plugin.t("Keywords"));
 
         const contentContainer = this.containerEl.createDiv('blur-panel-content');
         
@@ -127,7 +127,7 @@ export class BlurManagePanel {
         container.empty();
         
         if (this.plugin.settings.presets.length === 0) {
-            container.createEl('p', {text: 'No elements selected'});
+            container.createEl('p', {text: this.plugin.t("No elements selected")});
         } else {
             const list = container.createEl('ul');
             list.addClass('preset-list');
@@ -194,10 +194,10 @@ export class BlurManagePanel {
         const inputContainer = container.createDiv('keyword-input-container');
         const input = inputContainer.createEl('input', {
             type: 'text',
-            placeholder: 'Enter keyword'
+            placeholder: this.plugin.t("Enter keyword")
         });
         const addButton = inputContainer.createEl('button', {
-            text: 'Add',
+            text: this.plugin.t("Add"),
             cls: 'keyword-add-button'
         });
 
@@ -222,7 +222,7 @@ export class BlurManagePanel {
         container.empty();
         
         if (this.plugin.settings.keywords.length === 0) {
-            container.createEl('p', {text: 'No keywords added'});
+            container.createEl('p', {text: this.plugin.t("No keywords added")});
             return;
         }
 

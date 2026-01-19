@@ -16,10 +16,10 @@ export class BlurSettingTab extends PluginSettingTab {
 
         // Blur amount setting
         new Setting(containerEl)
-            .setName('Blur amount')
-            .setDesc('Set the amount of blur (in em)')
+            .setName(this.plugin.t("Blur amount"))
+            .setDesc(this.plugin.t("Set the amount of blur (in em)"))
             .addText(text => text
-                .setPlaceholder('0.5em')
+                .setPlaceholder(this.plugin.t("0.5em"))
                 .setValue(this.plugin.settings.blurAmount)
                 .onChange(async (value) => {
                     this.plugin.settings.blurAmount = value;
@@ -31,10 +31,10 @@ export class BlurSettingTab extends PluginSettingTab {
 
         // Manage presets setting
         new Setting(containerEl)
-            .setName('Manage presets')
-            .setDesc('Open the preset management panel')
+            .setName(this.plugin.t("Manage presets"))
+            .setDesc(this.plugin.t("Open the preset management panel"))
             .addButton(button => button
-                .setButtonText('Open panel')
+                .setButtonText(this.plugin.t("Open panel"))
                 .onClick(() => {
                     if (!this.plugin.blurPanel) {
                         this.plugin.blurPanel = new BlurManagePanel(this.plugin);
@@ -43,7 +43,7 @@ export class BlurSettingTab extends PluginSettingTab {
                 }));
 
         // Keywords list
-        new Setting(containerEl).setName('Current keywords').setHeading();
+        new Setting(containerEl).setName(this.plugin.t("Current keywords")).setHeading();
         const keywordList = containerEl.createEl('ul');
         this.plugin.settings.keywords.forEach((keyword: string) => {
             keywordList.createEl('li', { text: keyword });
@@ -51,8 +51,8 @@ export class BlurSettingTab extends PluginSettingTab {
 
         // Debug mode setting (moved to bottom)
         new Setting(containerEl)
-            .setName('Debug mode')
-            .setDesc('Enable debug mode to show console logs')
+            .setName(this.plugin.t("Debug mode"))
+            .setDesc(this.plugin.t("Enable debug mode to show console logs"))
             .addToggle(toggle => toggle
                 .setValue(this.plugin.settings.isDebugMode)
                 .onChange(async (value) => {

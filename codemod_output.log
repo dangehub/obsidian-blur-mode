@@ -1,0 +1,18 @@
+Processing 10 files... 
+__I18N_LOG__{"file":"src/core/PresetManager.ts","stats":{"replaced":2,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":["Added element to presets","Removed element from presets"]}
+__I18N_LOG__{"file":"src/main.ts","stats":{"replaced":0,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":[]}
+__I18N_LOG__{"file":"src/lang/i18n.ts","stats":{"replaced":0,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":[]}
+__I18N_LOG__{"file":"src/core/BlurManager.ts","stats":{"replaced":2,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":["Added element to presets","Removed element from presets"]}
+__I18N_LOG__{"file":"src/models/types.ts","stats":{"replaced":0,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":[]}
+__I18N_LOG__{"file":"src/ui/BlurSettingTab.ts","stats":{"replaced":9,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":["Open panel","Blur amount","Manage presets","Current keywords","Debug mode","Set the amount of blur (in em)","Open the preset management panel","Enable debug mode to show console logs","0.5em"]}
+__I18N_LOG__{"file":"src/ui/BlurManagePanel.ts","stats":{"replaced":7,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":["Blur management","CSS Selector","Keywords","No elements selected","Enter keyword","Add","No keywords added"]}
+__I18N_LOG__{"file":"src/utils/logger.ts","stats":{"replaced":0,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":[]}
+__I18N_LOG__{"file":"src/utils/dom.ts","stats":{"replaced":0,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":[]}
+__I18N_LOG__{"file":"src/constants.ts","stats":{"replaced":0,"lowRisk":0,"highRisk":0,"highRiskLocations":[]},"strings":[]}
+All done. 
+Results: 
+[31m0 errors
+[39m[33m6 unmodified
+[39m[33m0 skipped
+[39m[32m4 ok
+[39mTime elapsed: 0.742seconds 

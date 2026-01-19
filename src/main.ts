@@ -6,20 +6,26 @@ import { BlurSettingTab } from './ui/BlurSettingTab';
 import { DOMUtils } from './utils/dom';
 import { Logger } from './utils/logger';
 
+import { initI18n } from "./lang/i18n";
+
 export default class BlurPlugin extends Plugin {
+    i18n: any;
+    t: (key: string, params?: any) => string;
     settings: BlurSettings;
     blurManager: BlurManager;
     blurPanel: BlurManagePanel | null = null;
     logger: Logger;
 
     async onload() {
+        this.i18n = initI18n(this);
+        this.t = this.i18n.t.bind(this.i18n);
         this.logger = new Logger(this);
         await this.loadSettings();
-        
+
         // 强制设置选择模式为关闭状态
         this.settings.isSelectingMode = false;
         await this.saveSettings();
-        
+
         this.blurManager = new BlurManager(this);
 
         // 添加 ribbon 图标
