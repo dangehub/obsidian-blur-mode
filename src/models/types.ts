@@ -26,4 +26,5 @@ export interface BlurPluginInterface extends Plugin {
     isEditorElement(element: HTMLElement): boolean;
     isRibbonElement(element: HTMLElement): boolean;
     isManagePanelElement(element: HTMLElement): boolean;
+    t(key: string, params?: Record<string, string | number>): string;
 }
